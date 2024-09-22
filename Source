@@ -1,4 +1,4 @@
-local StaffGenus = "Natural Staff"
+local StaffGenus = "Staff Dark King"
 local desc = ""
 local StaffRare = ""
 local StaffMeshId = ""
@@ -139,11 +139,44 @@ Button.Position = UDim2.new(0.86, 0, 0.4, 0)
 Button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 Button.TextColor3 = Color3.fromRGB(255, 255, 255)
 Button.TextScaled = true
-Button.Text = ""
+Button.Text = "Forbidden Magic"
 Button.Parent = ScreenGui
 
+local lastPressTime = 0
 Button.MouseButton1Click:Connect(function()
-    
+local currentTime = tick()
+            if currentTime - lastPressTime >= 30 then
+                lastPressTime = currentTime
+local Anim = Instance.new("Animation")
+Anim.AnimationId = "rbxassetid://90721125"
+local k = game:GetService("Players").LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+k:Play()
+k:AdjustSpeed(1)
+
+sound = Instance.new("Sound", StaffHandle)
+sound.SoundId = "rbxassetid://5020148786"
+sound.Volume = 1
+sound.PlaybackSpeed = 0.9
+sound.Looped = false
+sound:Play()
+
+   local foundHumanoids = {}
+Usuario = game.Players.LocalPlayer
+for _, v in pairs(workspace:GetDescendants()) do
+    if v:IsA("Humanoid") and v.RootPart and v.RootPart.Parent ~= Usuario.Character then
+        local distance = (v.RootPart.Position - StaffHandle.Position).magnitude
+        if distance <= 20 then
+            table.insert(foundHumanoids, v)
+        end
+    end
+end
+
+for _, humanoid in pairs(foundHumanoids) do
+  humanoid.MaxHealth = humanoid.MaxHealth - (10 + stats["magic_damage"] / 10)
+  humanoid.WalkSpeed = humanoid.WalkSpeed * 0.75
+  humanoid.JumpPower = humanoid.JumpPower * 0.75
+end
+  end
 end)
 elseif StaffGenus == "Fire Staff" then
 local Button = Instance.new("TextButton")
@@ -159,7 +192,7 @@ Button.Parent = ScreenGui
 Button.MouseButton1Click:Connect(function()
     
 end)
-elseif StaffGenus == "Ice Staff" then
+elseif StaffGenus == "Staff Dark King" then
 local Button = Instance.new("TextButton")
 Button.Name = "Button"
 Button.Size = UDim2.new(0.07, 0.07, 0.07, 7)
@@ -167,11 +200,82 @@ Button.Position = UDim2.new(0.86, 0, 0.4, 0)
 Button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 Button.TextColor3 = Color3.fromRGB(255, 255, 255)
 Button.TextScaled = true
-Button.Text = ""
+Button.Text = "Cursed Hand"
 Button.Parent = ScreenGui
 
+local lastPressTime = 0
 Button.MouseButton1Click:Connect(function()
-    
+local currentTime = tick()
+            if currentTime - lastPressTime >= 5 then
+                lastPressTime = currentTime
+    hand = Instance.new("Part", workspace)
+        hand.Size = Vector3.new(4, 4, 4)
+        hand.Anchored = false
+        hand.CanCollide = false
+        hand.CFrame = game.Players.LocalPlayer.Character.Torso.CFrame * CFrame.new(f, 0, 3)
+        hand.BrickColor = BrickColor.new("Black")
+        hand.Material = "Slate"
+        
+        blackholep = Instance.new("ParticleEmitter")
+blackholep.Name = "BlackHole Effect"
+blackholep.Enabled = true
+blackholep.Lifetime = NumberRange.new(1)
+blackholep.Rate = 50
+blackholep.Size = NumberSequence.new(1, 1)
+blackholep.Speed = NumberRange.new(0)
+blackholep.Texture = "rbxassetid://258128463"
+blackholep.Parent = hand
+blackholep.LockedToPart = false
+blackholep.Color = ColorSequence.new(BrickColor.new("Really black").Color,BrickColor.new("Really black").Color)
+blackholep.RotSpeed = NumberRange.new(50)
+        game.Debris:AddItem(hand, 6)
+        
+        hand.Touched:Connect(function(hit)
+    coroutine.wrap(function()
+humanoid = hit.Parent:FindFirstChildOfClass("Humanoid")
+  if humanoid.RootPart and humanoid.Parent ~= game.Players.LocalPlayer.Character and humanoid.Health ~= 0 then
+  hand:Destroy()
+  humanoid:TakeDamage(15)
+   
+   partTweenn2 = game:GetService("TweenService"):Create(humanoid.RootPart, TweenInfo.new(1, Enum.EasingStyle.Linear), {
+        CFrame = StaffHandle.CFrame
+    })
+    partTweenn2:Play()
+  end
+ end)()
+        end)
+     handMesh = Instance.new("SpecialMesh", hand)
+        handMesh.MeshId = "rbxassetid://2899129749"
+        handMesh.Scale = Vector3.new(.8, .8, .8)
+
+        bodyVelocity = Instance.new("BodyVelocity", hand)
+        bodyVelocity.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+
+spawn(function()
+        repeat
+            local nearestHumanoid = nil
+            local nearestDistance = math.huge
+            for _, humanoidd in ipairs(workspace:GetDescendants()) do
+                if humanoidd:IsA("Humanoid") and humanoidd.Health ~= 0 and humanoidd.Parent ~= game.Players.LocalPlayer.Character then
+                    local distance = (humanoidd.RootPart.Position - hand.Position).Magnitude
+                    if distance < nearestDistance then
+                        nearestHumanoid = humanoidd
+                        nearestDistance = distance
+                    end
+                end
+            end
+
+            if nearestHumanoid then
+                bodyVelocity.Velocity = (nearestHumanoid.RootPart.Position - hand.Position).Unit * 250
+                hand.CFrame = CFrame.new(hand.Position, nearestHumanoid.RootPart.Position)
+            else
+                bodyVelocity.Velocity = Vector3.new(0, 0, 0)
+            end
+
+            task.wait()
+        until not hand or not hand.Parent
+      end)
+   end
 end)
 elseif StaffGenus == "Fire God Staff" then
 local Button = Instance.new("TextButton")
@@ -190,15 +294,94 @@ end)
 end
 
 local function CursedStaff()
+shoot = Instance.new("Part", workspace)
+shoot.Size = Vector3.new(2.5, 2.5, 2.5)
+shoot.Shape = "Ball"
+shoot.CanCollide = false
+shoot.Color = Color3.new(0, 0, 0)
+shoot.Position = StaffHandle.Position
+game.Debris:AddItem(shoot, 7)
 
+fire = Instance.new("Fire", shoot)
+fire.Size = 5
+fire.Heat = 20
+fire.Color = Color3.new(0, 0, 0)
+fire.SecondaryColor = Color3.new(0, 0, 0)
+
+Mouse = game.Players.LocalPlayer:GetMouse()
+mousehit = Mouse.Hit.Position
+
+bodyVelocity = Instance.new("BodyVelocity", shoot)
+        bodyVelocity.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+bodyVelocity.Velocity = (mousehit - shoot.Position).Unit * 250
+                shoot.CFrame = CFrame.new(shoot.Position, mousehit)
+    shoot.Touched:Connect(function(hit)
+ humanoid = hit.Parent:FindFirstChildOfClass("Humanoid")
+   if humanoid and humanoid.Parent ~= game.Players.LocalPlayer.Character then
+ humanoid:TakeDamage(10 + stats["magic_damage"] / 2.5)
+ humanoid.RootPart.Velocity = shoot.CFrame.LookVector * 150 + Vector3.new(0, 75, 0)
+ 
+ sound = Instance.new("Sound", humanoid.RootPart)
+sound.SoundId = "rbxassetid://81116734"
+sound.Volume = 1
+sound.PlaybackSpeed = 1
+sound.Looped = false
+sound:Play()
+
+ fire1 = Instance.new("Fire", humanoid.RootPart)
+ fire1.Size = 5
+ fire1.Heat = 20
+ fire1.Color = fire.Color
+ fire1.SecondaryColor = fire.SecondaryColor
+ game.Debris:AddItem(fire1, 6)
+ shoot:Destroy()
+       if humanoid.Health <= 0 then
+  game.Players.LocalPlayer.Character.Humanoid.Health = game.Players.LocalPlayer.Character.Humanoid.Health + (50 + stats["magic_damage"] / 5)
+  sound = Instance.new("Sound", StaffHandle)
+sound.SoundId = "rbxassetid://5020148786"
+sound.Volume = 1
+sound.PlaybackSpeed = 1
+sound.Looped = false
+sound:Play()
+       end
+   end
+    end)
 end
 
 local function FireStaff()
-
+ 
 end
 
-local function IceStaff()
+local function DarkKingStaff()
+ ball = Instance.new("Part", workspace)
+ ball.Position = StaffHandle.Position
+ ball.Size = Vector3.new(75, 75, 75)
+ ball.CanCollide = false
+ ball.Shape = "Ball"
+ ball.Material = "ForceField"
+ ball.Color = Color3.new(0, 0, 0)
+ ball.Anchored = true
+ game.Debris:AddItem(ball, 6)
+ 
+ partTweenn1 = game:GetService("TweenService"):Create(ball, TweenInfo.new(1, Enum.EasingStyle.Linear), {
+        Size = Vector3.new(0, 0, 0)
+    })
+    partTweenn1:Play()
+    
+    local foundHumanoids = {}
+Usuario = game.Players.LocalPlayer
+for _, v in pairs(workspace:GetDescendants()) do
+    if v:IsA("Humanoid") and v.RootPart and v.RootPart.Parent ~= Usuario.Character then
+        local distance = (v.RootPart.Position - StaffHandle.Position).magnitude
+        if distance <= 50 then
+            table.insert(foundHumanoids, v)
+        end
+    end
+end
 
+for _, humanoid in pairs(foundHumanoids) do
+ humanoid:TakeDamage(50 + stats["magic_damage"] / 2)
+end
 end
 
 local function FireGodStaff()
@@ -218,11 +401,21 @@ StaffMeshSize = Vector3.new(0.8, 0.8, 0.8)
 Staff.GripPos = Vector3.new(0, 0, -0.5)
 cooldown = 5
 elseif StaffGenus == "Cursed Staff" then
-
+desc = "The staff of a death shaman who sealed his soul into this staff"
+StaffMeshId = "rbxassetid://155304097"
+StaffTextureId = "rbxassetid://155304070"
+StaffMeshSize = Vector3.new(0.9, 0.9, 0.9)
+Staff.GripPos = Vector3.new(0, 0, 0)
+cooldown = 8
 elseif StaffGenus == "Fire Staff" then
 
-elseif StaffGenus == "Ice Staff" then
-
+elseif StaffGenus == "Staff Dark King" then
+StaffMeshId = "rbxassetid://127397392"
+StaffTextureId = "rbxassetid://127397429"
+StaffMeshSize = Vector3.new(0.5, 0.5, 0.5)
+Staff.GripPos = Vector3.new(0, 0, 0)
+Staff.Grip = CFrame.Angles(math.rad(90), 0, 0)
+cooldown = 10
 elseif StaffGenus == "Fire God Staff" then
 
 end
@@ -244,8 +437,8 @@ NaturalStaff()
 CursedStaff()
  elseif StaffGenus == "Fire Staff" then
 FireStaff()
- elseif StaffGenus == "Ice Staff" then
-IceStaff()
+ elseif StaffGenus == "Staff Dark King" then
+DarkKingStaff()
  elseif StaffGenus == "Fire God Staff" then
 FireGodStaff()
   end
